@@ -1,22 +1,22 @@
 ```
-                              /********************************************************************\
-                               *                           DISCLAIMER:                            *
-                               *                                                                  *
-                               *  This program is for educational purposes only. Usage signifies  *
-                               *  understanding of risks. Usage on unauthorized systems is        *
-                               *  prohibited.                                                     *
-                               *                                                                  *
-                               *  - Use only with proper authorization. Unauthorized use is       *
-                               *    strictly prohibited.                                          *
-                               *                                                                  *
-                               *  - The creator assumes no liability for damages or legal         *
-                               *    consequences caused by this program.                          *
-                               *                                                                  *
-                               *  - Ensure compliance with applicable laws and regulations.       *
-                               *                                                                  *
-                               *  Use responsibly, ethically, and respect others' privacy and     *
-                               *  security.                                                       *
-                              \********************************************************************/
+            /********************************************************************\
+           *                           DISCLAIMER:                            *
+           *                                                                  *
+           *  This program is for educational purposes only. Usage signifies  *
+           *  understanding of risks. Usage on unauthorized systems is        *
+           *  prohibited.                                                     *
+           *                                                                  *
+           *  - Use only with proper authorization. Unauthorized use is       *
+           *    strictly prohibited.                                          *
+           *                                                                  *
+           *  - The creator assumes no liability for damages or legal         *
+           *    consequences caused by this program.                          *
+           *                                                                  *
+           *  - Ensure compliance with applicable laws and regulations.       *
+           *                                                                  *
+           *  Use responsibly, ethically, and respect others' privacy and     *
+           *  security.                                                       *
+          \********************************************************************/
 ```
 
 
