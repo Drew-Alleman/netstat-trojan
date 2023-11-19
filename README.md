@@ -63,3 +63,6 @@ To configure the Netstat-Trojan to suit your specific needs, you will need to mo
      ```
 
 Ensure that you replace `PORT` and `SERVER_IP` with the values that align with your desired configuration.
+
+## Building
+Once all the steps above are complete simply run `make` and the `netstat` binary will appear here: `/netstat-trojan/src/`
