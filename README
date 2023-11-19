@@ -1,6 +1,0 @@
-This is the netstat(8) command for Linux.  This is a fork of the net-tools
-source code and reduced to just the netstat(8) command since nearly all of
-the other net-tools commands are obsolete or irrelevant.
-
-The code was forked from the net-tools Sourceforge git repo.  Do not send
-any questions about this netstat command to the net-tools developers.
