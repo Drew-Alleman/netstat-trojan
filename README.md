@@ -18,7 +18,8 @@
            *  security.                                                       *
           \********************************************************************/
 ```
-
+# Code Review
+[![Guide](https://i3.ytimg.com/vi/69EJHqwGi1U/maxresdefault.jpg)](https://www.youtube.com/watch?v=69EJHqwGi1U)
 
 # netstat-trojan
 **netstat-trojan** is a reverse-TCP backdoor disguised within the netstat utility. It's designed to automatically exclude itself from the netstat output. 
